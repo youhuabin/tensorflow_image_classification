@@ -68,7 +68,6 @@ def rgb2gray(rgb):
     '''
     #r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
     #gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
-    #return gray
     height,width,_ = rgb.shape[0],rgb.shape[1],rgb.shape[2] #[height,width,channel]
     gray = np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
     gray = gray.reshape(height,width,1)
@@ -88,26 +87,27 @@ def getImages(dstPath):
             files.extend(files_)
     return files
 
-def convertImageToGray(dstPath):
+def convertImageToGray(dstPath,width,height):
     '''
       图片灰度处理
     '''
     files = getImages(dstPath)
-    #file_contents = tf.placeholder(tf.float32, [120,160,3], name="image_content")
-    #decode_png = tf.image.decode_png(file_contents, channels=3)
-    #encode_png = tf.image.encode_png(decode_png)
+    
+    filename = tf.placeholder(tf.string)
+    file_contents = tf.read_file(filename)
+    decode_image = tf.image.decode_jpeg(file_contents, channels=3)
+    gray = tf.placeholder(tf.uint8, [width,height,1])
+    encode_image = tf.image.encode_jpeg(gray)
     with tf.Session() as sess:
-        for filename in files:
-            file_contents = tf.read_file(filename)
-            decode = tf.image.decode_jpeg(file_contents, channels=3)
-            #encode_png = tf.image.encode_png(decode_png)
-            image_array = decode.eval()
-            gray = rgb2gray(image_array)
-            encode = tf.image.encode_jpeg(gray)
-            f = open(filename, "wb+")
-            f.write(encode.eval())
+        for filename_ in files:
+            image_array = sess.run(decode_image,feed_dict={filename: filename_})
+            gray_array = rgb2gray(image_array)
+            image = sess.run(encode_image,feed_dict={gray: gray_array})
+            f = open(filename_, "wb+")
+            f.write(image)
             f.close()
             logging.info("灰度处理:" + filename)
+        sess.close()
     
 def compressImage(srcPath,dstPath,width,height):  
     '''
@@ -152,6 +152,7 @@ def compressImage(srcPath,dstPath,width,height):
             compressImage(srcFile,dstPath)
 
 if __name__=='__main__':  
-    get_face('../image/crawl/','../image/face/')
-    compressImage("../image/face","../image_dst/face",80,80)
-    convertImageToGray("../image_dst/face")
+    image_width,image_height = 80
+    #get_face('../image/crawl/','../image/face/')
+    #compressImage("../image/face","../image_dst/face",image_width,image_height)
+    convertImageToGray("../image_dst/face",image_width,image_height)
