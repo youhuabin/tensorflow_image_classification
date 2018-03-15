@@ -1160,19 +1160,19 @@ if __name__ == '__main__':
   parser.add_argument(
       '--image_dir',
       type=str,
-      default='../../image/face',
+      default='../../image/flower_photos',
       help='Path to folders of labeled images.'
   )
   parser.add_argument(
       '--output_graph',
       type=str,
-      default='../../model/face/face_class_inception_graph.pb',
+      default='../../model/flower/face_class_inception_graph.pb',
       help='Where to save the trained graph.'
   )
   parser.add_argument(
       '--intermediate_output_graphs_dir',
       type=str,
-      default='../../image/face_intermediate_graph',
+      default='../../image/flower_intermediate_graph',
       help='Where to save the intermediate graphs.'
   )
   parser.add_argument(
@@ -1187,7 +1187,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--output_labels',
       type=str,
-      default='../../model/face/output_labels.txt',
+      default='../../model/flower/output_labels.txt',
       help='Where to save the trained graph\'s labels.'
   )
   parser.add_argument(
@@ -1277,7 +1277,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--bottleneck_dir',
       type=str,
-      default='../../image/face/bottleneck',
+      default='../../image/flower_photos/bottleneck',
       help='Path to cache bottleneck layer values as files.'
   )
   parser.add_argument(
